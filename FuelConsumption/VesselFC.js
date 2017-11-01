@@ -35,9 +35,6 @@ function Path_FC(SFC,MCR,Speed,Path){
 
         
         }
-        console.log('------------------------------------');
-        console.log(Dist);
-        console.log('------------------------------------');
         return Fuel_Consumption(SFC,MCR,Speed,Dist);
     }
 
