@@ -47,3 +47,8 @@ function Path_Build(x,y){
     }
     return result;
 }
+
+function plot_document(){
+    document.getElementById("results").innerHTML=document.getElementById("SFC").value
+    
+}

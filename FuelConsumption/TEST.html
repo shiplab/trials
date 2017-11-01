@@ -1,9 +1,29 @@
-<head>FUEL CONSUMPTION TEST
+<!DOCTYPE html>
+<html>
+<head><title>FUEL CONSUMPTION TEST</title>
 
 <script src = "VesselFC.js"></script>
 </head>
 
 <body>
+    <h1>Simple Fuel Comsumption App</h1>
+    
+<h2>Introduction</h2>
+<p>This app receives a path, SFC and speed and calculates the total fuel comsumption for a path.</p>
+    <p>Add simple image here</p>
+    <h2>Input</h2>
+    <ul><li>SFC - bla bla bla</li>
+        <li>Array of Points - bla</li>
+        <li>Array of Speed</li>
+        <li>kWh</li>
+        
+ <span> <p> SFC: <input type="text" id="SFC" value=200> 
+     <button onclick="plot_document()">Oi</button>
+    
+    <h3>Results</h3>
+     <div id="results"></div>
+    </ul>
+    
 <svg width="960" height="500"></svg>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
@@ -64,3 +84,4 @@ d3.tsv("data.tsv", function(d) {
 
 </script>
 </body>
+</html>
