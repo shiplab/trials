@@ -9,23 +9,62 @@
     <h1>Simple Fuel Comsumption App</h1>
     
 <h2>Introduction</h2>
-<p>This app receives a path, SFC and speed and calculates the total fuel comsumption for a path.</p>
+<p>This app shows the basics functions of the fuel comsumption library. it needs a path, SFC and speed and calculates the total fuel comsumption for a path.</p>
     <p>Add simple image here</p>
-    <h2>Input</h2>
+    <h2>Inputs</h2>
     <ul><li>SFC - bla bla bla</li>
-        <li>Array of Points - bla</li>
-        <li>Array of Speed</li>
-        <li>kWh</li>
+        <li>Array of Distances - bla</li>
+        <li>Speed- Array of Speed or mean speed</li>
+        <li>kWh of the engine for the speed</li>
         
- <span> <p> SFC: <input type="text" id="SFC" value=200> 
-     <button onclick="plot_document()">Oi</button>
-    
+ <span> <p> SFC(g/kwh): <input type="text" id="SFC" value=200><button onclick="cal()">Calculate</button>
+        <p> Distance (m): <input type = "text" id = "dist" value =200>
+        <button onclick="plot_distance()">Add</button> <button onclick="dist_clear()">clear</button>
+        <p id = "dist_result">
+        <p> Speed(m/s): <input type = "text" id = "vel" value =200>
+        <button onclick="plot_vel()">Add</button> <button onclick="vel_clear()">clear</button>
+        <p id = "vel_result">
+        <p> kWh of the propeller:<input type = "text" id ="MCR" value =10000>
     <h3>Results</h3>
      <div id="results"></div>
     </ul>
     
 <svg width="960" height="500"></svg>
 <script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+    var MCR;
+    var SFC;
+var dist = [];
+var speed = [];
+function cal(){
+    SFC = parseFloat(document.getElementById("SFC").value);
+    MCR = parseFloat(document.getElementById("MCR").value);
+    var o = Fuel_Consumption(SFC,MCR,speed,dist)
+    if(dist.length > 0 && speed.length > 0 ){
+    document.getElementById("results").innerHTML ="Total:"+ o.Total +" Individual Consumption:"+o.Consumption;
+    }else{
+     document.getElementById("results").innerHTML = "ERROR missing Dist or Speed";   
+    }
+
+}
+function dist_clear(){
+    dist = [];
+    document.getElementById("dist_result").innerHTML=dist;
+}    
+function plot_distance(){
+        dist.push(parseFloat(document.getElementById("dist").value));
+     document.getElementById("dist_result").innerHTML=dist;
+}
+function plot_vel(){
+    speed.push(parseFloat(document.getElementById("vel").value));
+     document.getElementById("vel_result").innerHTML=speed;
+}
+function vel_clear(){
+    speed = [];
+    document.getElementById("vel_result").innerHTML=speed;
+}
+</script>
+
 <script>
 
 var svg = d3.select("svg"),
