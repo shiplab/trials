@@ -155,7 +155,7 @@ function cal_path(){
         document.getElementById("resultsPath").innerHTML = "X and Y do not have the same size";
     }else{
         if(o != -1 && speed.length > 0 ){
-        vis(path);
+        vis(path,o);
         document.getElementById("resultsPath").innerHTML ="Total:"+ o.Total+"g" +" Individual Consumption:"+o.Consumption+"g";
         }else{
     
@@ -167,7 +167,7 @@ function cal_path(){
     }
 }
 
-function vis(o){
+function vis(o,p){
     var svgDoc = d3.select("body").select("div").select("svg");
     var margin = {top: 20, right: 20, bottom: 30, left: 20},
                 width = 600 - margin.left - margin.right,
@@ -175,15 +175,20 @@ function vis(o){
     var xScale = d3.scaleLinear().range([0,width]);
        
     var yScale = d3.scaleLinear().range([height,0]);
-        
+
+    var colorScale = d3.scaleLinear().range([d3.rgb("#007AFF"), d3.rgb('#FFF500')]); 
+
    xScale.domain([0, d3.max(o, function (d) { return d.x;})]);
-   yScale.domain([0,d3.max(o, function (d) { return d.y;})]);
-   svgDoc.selectAll().remove();
+   yScale.domain([0,(20+d3.max(o, function (d) { return d.y;}))]);
+   colorScale.domain([0,p.Total]);
+   svgDoc.selectAll('*').remove();
    
     var points =svgDoc.selectAll("circle").data(o);
     points.exit().remove();
     points.enter().append("circle").attr("r",10).attr("cx",function(d){return xScale(d.x);}).attr("cy",function(d){return yScale(d.y);}).merge(points);
     
+    //svgDoc.selectAll("circle").data(p).enter().attr("fill",function(d){return colorScale(d.Consumption);});
+
     svgDoc.selectAll("path").remove();
     svgDoc.append("path")
       .data([o])
@@ -198,7 +203,7 @@ function vis(o){
         .append("g")
         .attr("transform", 
               "translate(" + margin.left + "," + margin.top + ")");
-             
+          
     svgDoc.append("g")
       .call(d3.axisLeft(yScale));
     svgDoc.append("g")
