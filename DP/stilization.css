@@ -1,0 +1,20 @@
+legend {
+    font-size:20px
+}
+
+label.field{
+width: 500px;
+
+
+}
+
+input.number{
+width:100px;
+clear: both;
+}
+
+fieldset p {
+clear: both;
+padding: 5px;
+
+}
