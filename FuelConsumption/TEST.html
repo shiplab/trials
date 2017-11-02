@@ -46,14 +46,45 @@ The Ability to safely estimate one expenses and decide the right parameters for 
      <div id="results"></div>
     </ul>
 <h2>Path_FC function </h2>
-<p>Uses the same equations than the previous function, however allows the user to give the destinations point and calulates the distances itself.</p>   
-<svg width="960" height="500"></svg>
+<p>Uses the same equations than the previous function, however allows the user to give the destinations point and calulates the distances itself.In other words it needs the points A,B and C, instead of the distances AB and BC.</p>   
+<h3>Inputs</h3>
+    <ul><li>SFC - specific fuel comsumption</li>
+        <li>Points - 2D array of points</li>
+        <li>Speed- accepts both Array of Speed or just the mean speed</li>
+        <li>kWh of the engine</li>
+        
+ <table><tbody> <tr> <td> SFC(g/kw):</td>  <td><input type="text" id="SFC2" value=200></td></tr>
+        <tr>
+            <td> Points x(m): </td>        <td><input type = "text" id = "pointsx" value =200></td> <td> <button onclick="x_plot()">Add</button></td> <td> <button onclick="x_clear()">clear</button></td>
+        <td id = "dist_resultx"></td>
+        </tr>
+        <tr>
+        <td> Points y(m): </td>        <td><input type = "text" id = "pointsy" value =200></td> <td> <button onclick="y_plot()">Add</button></td> <td> <button onclick="y_clear()">clear</button></td>
+        <td id = "dist_resulty"></td>
+        </tr>
+        <tr>
+        <td> Speed(m/s):</td>               <td> <input type = "text" id = "vel2" value =200></td>   <td><button onclick="plot_vel2()">Add</button></td>       <td> <button onclick="vel2_clear()">clear</button></td>
+        <td id = "vel_result2"></td>
+        </tr>
+        <tr>
+        <td> kWh :</td>                     <td><input type = "text" id ="MCR2" value =10000></td>
+        </tr>
+        </tbody>
+ </table>
+        <p><button onclick="cal_path()">Calculate</button>
+<h3>Results</h3>
+<div id = "resultsPath">
+</ul>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
+    var x =[];
+    var y = [];
     var MCR;
     var SFC;
 var dist = [];
 var speed = [];
+var path;
+
 function cal(){
     SFC = parseFloat(document.getElementById("SFC").value);
     MCR = 0.0027778*parseFloat(document.getElementById("MCR").value);
@@ -65,81 +96,76 @@ function cal(){
     }
 
 }
+
 function dist_clear(){
     dist = [];
     document.getElementById("dist_result").innerHTML=dist;
 }    
+
 function plot_distance(){
         dist.push(parseFloat(document.getElementById("dist").value));
      document.getElementById("dist_result").innerHTML=dist;
 }
+
 function plot_vel(){
     speed.push(parseFloat(document.getElementById("vel").value));
      document.getElementById("vel_result").innerHTML=speed;
 }
+
+function plot_vel2(){
+    speed.push(parseFloat(document.getElementById("vel2").value));
+     document.getElementById("vel_result2").innerHTML=speed;
+}
+
 function vel_clear(){
     speed = [];
     document.getElementById("vel_result").innerHTML=speed;
 }
+
+function vel2_clear(){
+    speed = [];
+    document.getElementById("vel_result2").innerHTML=speed;
+}
+
+function x_plot(){
+ x.push(parseFloat(document.getElementById("pointsx").value));
+ document.getElementById("dist_resultx").innerHTML = x;
+}
+
+function x_clear(){
+    x = [];
+    document.getElementById("dist_resultx").innerHTML=x;
+}
+function y_plot(){
+ y.push(parseFloat(document.getElementById("pointsy").value));
+ document.getElementById("dist_resulty").innerHTML = y;
+}
+function y_clear(){
+    y = [];
+    document.getElementById("dist_resulty").innerHTML=y;
+}
+
+function cal_path(){
+    SFC = parseFloat(document.getElementById("SFC2").value);
+    MCR = 0.0027778*parseFloat(document.getElementById("MCR2").value);
+    path = Path_Build(x,y);
+    var o = Path_FC(SFC,MCR,speed,path);
+    if(x.length != y.length){
+        document.getElementById("resultsPath").innerHTML = "X and Y do not have the same size";
+    }else{
+        if(o != -1 && speed.length > 0 ){
+        document.getElementById("resultsPath").innerHTML ="Total:"+ o.Total+"g" +" Individual Consumption:"+o.Consumption+"g";
+        }else{
+    
+                if(o == -1){
+                    document.getElementById("resultsPath").innerHTML = "ERROR, path need at least 2 points";
+                }else
+                document.getElementById("resultsPath").innerHTML = "ERROR missing Data";   
+        }
+    }
+}
 </script>
 
-<script>
-
-var svg = d3.select("svg"),
-    margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = +svg.attr("width") - margin.left - margin.right,
-    height = +svg.attr("height") - margin.top - margin.bottom,
-    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-var parseTime = d3.timeParse("%d-%b-%y");
-
-var x = d3.scaleTime()
-    .rangeRound([0, width]);
-
-var y = d3.scaleLinear()
-    .rangeRound([height, 0]);
-
-var line = d3.line()
-    .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.close); });
-
-d3.tsv("data.tsv", function(d) {
-  d.date = parseTime(d.date);
-  d.close = +d.close;
-  return d;
-}, function(error, data) {
-  if (error) throw error;
-
-  x.domain(d3.extent(data, function(d) { return d.date; }));
-  y.domain(d3.extent(data, function(d) { return d.close; }));
-
-  g.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x))
-    .select(".domain")
-      .remove();
-
-  g.append("g")
-      .call(d3.axisLeft(y))
-    .append("text")
-      .attr("fill", "#000")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", "0.71em")
-      .attr("text-anchor", "end")
-      .text("Price ($)");
-
-  g.append("path")
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", "steelblue")
-      .attr("stroke-linejoin", "round")
-      .attr("stroke-linecap", "round")
-      .attr("stroke-width", 1.5)
-      .attr("d", line);
-});
-
-</script>
-    </div>
+</div>
 </body>
 </html>
