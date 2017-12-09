@@ -1,7 +1,9 @@
 
-function Fuel_Consumption(SFC,MCR,Speed,Dist){
-    // SFC fuel specific comsuption
-      
+function Fuel_Consumption(SFC,PEP,Speed,Dist){
+    // SFC      fuel specific comsuption
+    // PEP      propeller  engine power
+    // Speed    velocity during the distance(Dist)
+    // Dist     Distance
     var len = Dist.length;
     
     var sum =0;
@@ -15,7 +17,7 @@ function Fuel_Consumption(SFC,MCR,Speed,Dist){
         }else{
             time = Dist[i]/Speed;
         }
-        cons[i] = time*MCR*SFC; // partial consumption
+        cons[i] = time*PEP*SFC; // partial consumption
         com += cons[i]; // total consumption 
     }
     var result = {"Total": com, "Consumption": cons};
@@ -23,7 +25,7 @@ function Fuel_Consumption(SFC,MCR,Speed,Dist){
 
 }
 
-function Path_FC(SFC,MCR,Speed,Path){
+function Path_FC(SFC,PEP,Speed,Path){
     if(Path.length <= 1 || Path.length == 'undefined'){
         return -1;
 

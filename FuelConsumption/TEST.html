@@ -2,7 +2,7 @@
 <html>
 <head><title>FUEL CONSUMPTION TEST</title>
 <script src="https://d3js.org/d3.v4.min.js"></script>
-<script src = "VesselFC.js"></script>
+<script src = "js/VesselFC.js"></script>
 </head>
 
 <body>
@@ -176,9 +176,15 @@ function cal_path(){
 
 function vis(o,p){
     var svgDoc = d3.select("body").select("div").select("svg");
-    var margin = {top: 20, right: 20, bottom: 30, left: 20},
+    svgDoc.selectAll('*').remove();
+    var margin = {top: 20, right: 20, bottom: 30, left: 30},
                 width = 600 - margin.left - margin.right,
                 height = 500 - margin.top - margin.bottom;
+    svgDoc = svgDoc.attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform","translate(" +margin.left + "," +margin.top + ")");
+    
     var xScale = d3.scaleLinear().range([0,width]);
        
     var yScale = d3.scaleLinear().range([height,0]);
@@ -186,9 +192,9 @@ function vis(o,p){
     var colorScale = d3.scaleLinear().range([d3.rgb("#007AFF"), d3.rgb('#FFF500')]); 
 
    xScale.domain([0, d3.max(o, function (d) { return d.x;})]);
-   yScale.domain([0,(20+d3.max(o, function (d) { return d.y;}))]);
+   yScale.domain([0,d3.max(o, function (d) { return d.y;})]);
    colorScale.domain([0,p.Total]);
-   svgDoc.selectAll('*').remove();
+   
    
     var points =svgDoc.selectAll("circle").data(o);
     points.exit().remove();
