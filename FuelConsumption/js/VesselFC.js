@@ -37,7 +37,7 @@ function Path_FC(SFC,PEP,Speed,Path){
 
         
         }
-        return Fuel_Consumption(SFC,MCR,Speed,Dist);
+        return Fuel_Consumption(SFC,PEP,Speed,Dist);
     }
 
 }
